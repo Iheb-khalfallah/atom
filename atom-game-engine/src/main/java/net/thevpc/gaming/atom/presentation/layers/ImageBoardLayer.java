@@ -141,4 +141,6 @@ public class ImageBoardLayer extends FlatBoardLayer{
     public int getImageWidth() {
         return imageWidth;
     }
+
+
 }

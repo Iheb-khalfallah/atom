@@ -24,12 +24,13 @@ public class SLabel extends DefaultSceneComponent {
 
     public SLabel(String value) {
         this(null, value);
+        
     }
 
     public SLabel(String name, String value) {
         super(name);
         this.text = value;
-        getTextStyle(SceneComponentState.DEFAULT).setForeColor(Color.BLACK);
+        getTextStyle(SceneComponentState.HOVER).setForeColor(Color.yellow);
         setController(new DefaultSceneController() {
             @Override
             public void keyPressed(SceneKeyEvent e) {

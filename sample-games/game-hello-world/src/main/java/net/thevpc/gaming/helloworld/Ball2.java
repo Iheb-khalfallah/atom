@@ -6,30 +6,26 @@ import net.thevpc.gaming.atom.annotations.OnInit;
 import net.thevpc.gaming.atom.engine.SceneEngine;
 import net.thevpc.gaming.atom.engine.collisiontasks.BounceSpriteCollisionTask;
 import net.thevpc.gaming.atom.engine.collisiontasks.StopSpriteCollisionTask;
+import net.thevpc.gaming.atom.engine.maintasks.MotionSpriteMainTask;
 import net.thevpc.gaming.atom.engine.maintasks.MoveSpriteMainTask;
-import net.thevpc.gaming.atom.engine.maintasks.MoveToPointSpriteMainTask;
 import net.thevpc.gaming.atom.model.Sprite;
 
-/**
- * Created by vpc on 9/23/16.
- */
 @AtomSprite(
-        name = "Ball1",
+        name = "Ball2",
         kind = "Ball",
         sceneEngine = "hello",
-        x=0,
-        y=0,
-        direction = Math.PI/4,
-        speed = 0.2,
+        x=3,
+        y=3,
+        direction = - Math.PI/4,
+        speed = 0.4,
         mainTask = MoveSpriteMainTask.class,
-        //mainTask = MoveToPointSpriteMainTask.class,
-        //collisionTask = StopSpriteCollisionTask.class
-        collisionTask = BounceSpriteCollisionTask.class,
-        width = 1,
-        height = 1
-)
+        width = 2,
+        height = 2,
+        //   collisionTask = StopSpriteCollisionTask.class
+        collisionTask = Ball2DefaultSpriteCollisionManager.class
 
-public class Ball {
+)
+public class Ball2 {
     @Inject
     Sprite sprite;
     @Inject
@@ -37,6 +33,6 @@ public class Ball {
 
     @OnInit
     private void init(){
-       sprite.setLocation(2,2);
+        sprite.setLocation(9,2);
     }
 }

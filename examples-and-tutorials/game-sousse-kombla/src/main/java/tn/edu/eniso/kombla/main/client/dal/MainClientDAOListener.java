@@ -1,6 +1,6 @@
-package net.thevpc.gaming.atom.examples.kombla.main.client.dal;
+package tn.edu.eniso.kombla.main.client.dal;
 
-import net.thevpc.gaming.atom.examples.kombla.main.shared.model.DynamicGameModel;
+import tn.edu.eniso.kombla.main.shared.model.DynamicGameModel;
 
 /**
  * Created by vpc on 10/7/16.
@@ -11,5 +11,4 @@ public interface MainClientDAOListener {
      * @param model
      */
     public void onModelChanged(DynamicGameModel model);
-
 }

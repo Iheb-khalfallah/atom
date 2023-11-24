@@ -2,29 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.thevpc.gaming.atom.examples.kombla.main.client.engine;
+package tn.edu.eniso.kombla.main.client.engine;
 
-import net.thevpc.gaming.atom.examples.kombla.main.client.dal.MainClientDAO;
-import net.thevpc.gaming.atom.examples.kombla.main.client.dal.MainClientDAOListener;
-import net.thevpc.gaming.atom.examples.kombla.main.shared.engine.AbstractMainEngine;
-import net.thevpc.gaming.atom.examples.kombla.main.shared.model.DynamicGameModel;
-import net.thevpc.gaming.atom.examples.kombla.main.shared.model.StartGameInfo;
-import net.thevpc.gaming.atom.annotations.AtomSceneEngine;
-import static net.thevpc.gaming.atom.examples.kombla.main.shared.engine.AbstractMainEngine.getAppConfig;
-import net.thevpc.gaming.atom.examples.kombla.main.shared.engine.AppConfig;
-import net.thevpc.gaming.atom.model.*;
-import static net.thevpc.gaming.atom.model.Orientation.EAST;
-import static net.thevpc.gaming.atom.model.Orientation.NORTH;
-import static net.thevpc.gaming.atom.model.Orientation.SOUTH;
-import static net.thevpc.gaming.atom.model.Orientation.WEST;
+import net.vpc.gaming.atom.annotations.AtomSceneEngine;
+import net.vpc.gaming.atom.model.*;
+import tn.edu.eniso.kombla.main.client.dal.MainClientDAO;
+import tn.edu.eniso.kombla.main.client.dal.MainClientDAOListener;
+import tn.edu.eniso.kombla.main.client.dal.TCPMainClientDAO;
+import tn.edu.eniso.kombla.main.client.dal.UDPMainClientDAO;
+import tn.edu.eniso.kombla.main.shared.model.DynamicGameModel;
+import tn.edu.eniso.kombla.main.shared.model.StartGameInfo;
+import tn.edu.eniso.kombla.main.shared.engine.AbstractMainEngine;
+
+import java.util.Map;
 
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  */
-@AtomSceneEngine(id = "mainClient", columns = 12, rows = 12)
+@AtomSceneEngine(id = "mainClient",width = 12,height = 12)
 public class MainClientEngine extends AbstractMainEngine {
-    private MainClientDAO dao=null;//new TCPMainClientDAO();
+    private MainClientDAO dao;
     public MainClientEngine() {
     }
 
@@ -32,7 +30,7 @@ public class MainClientEngine extends AbstractMainEngine {
     protected void sceneActivating() {
         //put here your MainClientDAO instance
         //dao = new TCPMainClientDAO();
-//        dao = new UDPMainClientDAO();
+        dao = new UDPMainClientDAO();
 
         dao.start(new MainClientDAOListener() {
             @Override
@@ -44,13 +42,28 @@ public class MainClientEngine extends AbstractMainEngine {
                         resetPlayers();
                         getModel().setFrame(model.getFrame());
                         for (Player player : model.getPlayers()) {
-                            Player p = createPlayer().copyFrom(player);
+                            Player p = createPlayer();
+                            p.setName(player.getName());
+                            p.setId(player.getId());
                             addPlayer(p);
                         }
                         for (Sprite sprite : model.getSprites()) {
-                            Sprite s = createSprite(sprite.getKind()).copyFrom(sprite);
+                            Sprite s = createSprite(sprite.getKind());
                             if("Person".equals(sprite.getKind()) || "Bomb".equals(sprite.getKind())){
                                 s.setSize(new ModelDimension(0.5,0.5));
+                            }
+                            s.setName(sprite.getName());
+                            s.setId(sprite.getId());
+                            s.setLocation(sprite.getLocation());
+                            s.setDirection(sprite.getDirection());
+                            s.setLife(sprite.getLife());
+                            s.setMovementStyle(sprite.getMovementStyle());
+                            s.setPlayerId(sprite.getPlayerId());
+                            Map<String, Object> pp = sprite.getProperties();
+                            if(pp!=null) {
+                                for (Map.Entry<String, Object> ee : pp.entrySet()) {
+                                    s.setProperty(ee.getKey(),ee.getValue());
+                                }
                             }
                             addSprite(s);
                         }
@@ -58,10 +71,9 @@ public class MainClientEngine extends AbstractMainEngine {
                     }
                 });
             }
-        }, getAppConfig(getGameEngine()));
-        AppConfig properties = null;
+        }, getGameEngine().getModel().getProperties());
         //call server to connect
-        StartGameInfo startGameInfo = dao.connect(properties);
+        StartGameInfo startGameInfo = dao.connect();
         //configure model's maze with data retrieved.
         setModel(new DefaultSceneEngineModel(startGameInfo.getMaze()));
         //create new player
